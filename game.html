@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+div#board{
+	background:#FFF;
+	width:690px;
+	height:540px;
+}
+div#board > div{
+	background: #474545;
+	border:#474545 1px solid;
+	border-radius: 5px;
+	width:55px;
+	height:55px;
+	float:left;
+	margin:4px;
+	padding:20px;
+	cursor:pointer;
+	display: flex;
+}
+
+div#board > div:hover {
+	background:#e0e0e0;
+	border:#e0e0e0 1px solid;
+}
+
+div#board > div > span {
+  height: 55px;
+  width: 55px;
+  background: #fff;
+  border-radius: 50%;
+}
+</style>
+<script>
+var count = 0;
+var first_click = 0;
+var dots_position = [];
+var checked_array = [];
+var prevValue = 37;
+shuffle_tile = function(no_of_dots){	
+	while(dots_position.length < no_of_dots){
+		var r = Math.floor(Math.random()*36);
+		if(dots_position.indexOf(r) === -1) dots_position.push(r);
+    }
+	console.log(dots_position);
+}
+
+function createBoard(no_of_dots = 5){
+	var output = '';
+	dots_position = [];
+	checked_array = [];
+	count = 0;
+	first_click = 0;
+	prevValue = 0;
+    shuffle_tile(no_of_dots);
+	for(var i = 0; i < 36; i++){
+		if(dots_position.indexOf(i) === -1)
+			output += '<div id="'+i+'" onclick="check_dot_tile_match(this,\''+i+'\')"></div>';
+		else
+			output += '<div id="'+i+'" onclick="check_dot_tile_match(this,\''+i+'\')"><span id="dots"></span></div>';
+	}
+	document.getElementById('board').innerHTML = output;
+	var colors = ['#2d335b', '#535b2d', '#494949', '#d7d7d7', '9ad4ce'];
+	var divs = $('div');
+
+	for (var i = 0; i < divs.length; i++) {
+		var color = colors[i % colors.length];
+
+		$(divs[i]).css('background-color', color);
+	};
+}
+
+function check_dot_tile_match(tile,val){
+	if(first_click == 0){
+		dots_position.forEach(function(element) {
+		  document.getElementById(element).innerHTML = "";
+		});
+		first_click = 1;
+		checked_array.push(parseInt(val));
+		count +=1;
+	}
+	var temp = parseInt(val);
+	if(dots_position.indexOf(parseInt(val)) === -1) {
+		alert("you lose");
+		first_click = 0;
+		document.getElementById('board').innerHTML = "";
+		createBoard(5);
+	}
+	else {
+		if(checked_array.indexOf(parseInt(val)) == -1){
+			checked_array.push(parseInt(val));
+			count += 1;
+		}
+		if(count === dots_position.length){
+			alert("you won");
+			document.getElementById('board').innerHTML = "";
+			prevValue = 0;
+			createBoard(count + 1);
+		}
+	}
+}
+</script>
+</head>
+<body onload="createBoard(5)">
+<div id="board"></div>
+</body>
+</html>
